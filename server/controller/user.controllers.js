@@ -20,4 +20,19 @@ const register = async (req, res) => {
     }
 }
 
-export {register};
+const login = async (req, res) => {
+    try{
+        const {username, password} = req.body;
+        const user = await User.findOne({username});
+        if(!user) return res.status(200).send({success: false, message: "Invalid username or password"});
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        if(!isPasswordValid) return res.status(200).send({success: false, message: "Invalid username or password"});
+        user.password = undefined;
+        return res.status(200).send({success: true, message: "Login successful", user});
+    }
+    catch(err){
+        return res.status(500).send({success: false, message: err.message});
+    }
+}
+
+export {register,login};

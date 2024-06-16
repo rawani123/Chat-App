@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
@@ -22,6 +22,12 @@ const RegisterPage = () => {
     theme: "dark",
   };
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/");
+    }
+  }, []);
 
   const handleValidation = () => {
     const { password, confirmPassword, username, email } = values;
