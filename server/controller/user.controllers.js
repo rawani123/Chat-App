@@ -35,4 +35,19 @@ const login = async (req, res) => {
     }
 }
 
-export {register,login};
+const setAvatarImage = async (req, res) => {
+    try{
+        const {id} = req.params;
+        const {image} = req.body;
+        const user = await User.findById(id);
+        if(!user) return res.status(200).send({success: false, message: "User not found"});
+        user.avatarImage = image;
+        user.isAvatarImageSet = true;
+        await user.save();
+        return res.status(200).send({success: true, message: "Avatar image set successfully", isSet:true,image:user.avatarImage});
+    }catch(err){
+        return res.status(500).send({success: false, message: err.message});
+    }
+}
+
+export {register,login,setAvatarImage};
