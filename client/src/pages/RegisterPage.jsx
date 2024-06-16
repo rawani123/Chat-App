@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const RegisterPage = () => {
   const [values, setValues] = useState({
@@ -20,6 +21,7 @@ const RegisterPage = () => {
     draggable: true,
     theme: "dark",
   };
+  const navigate = useNavigate();
 
   const handleValidation = () => {
     const { password, confirmPassword, username, email } = values;
@@ -48,10 +50,21 @@ const RegisterPage = () => {
 
     return true;
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     handleValidation();
-    alert("submit");
+    const { username, email, password } = values;
+    const {data} = await axios.post("http://localhost:5000/api/v1/auth/register", {username, email, password});
+    if(data.success){
+      
+      toast.success(data.message, toastOptions);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/");
+    }
+    else{
+      toast.error(data.message, toastOptions);
+    }
+
   };
 
   const handleChange = (e) => {
