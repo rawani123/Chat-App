@@ -1,8 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Logout from "./Logout";
+import ChatInput from "./ChatInput";
+// import Messaages from "./Messaages";
+import axios from "axios";
+// import { get } from "mongoose";
 
-const ChatContainer = ({ chat }) => {
+const ChatContainer = ({ chat,user }) => {
+
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      const {data}=await axios.post(`http://localhost:5000/api/v1/messages/get-all-messages`,{
+        from : user?._id,
+        to: chat?._id
+      });
+      setMessages(data.messages);
+    };
+    getMessages();
+  }, [chat]);
+
+  const handleSendMsg = async(msg) => {
+    await axios.post("http://localhost:5000/api/v1/messages/add-message",{
+      from:user._id,
+      to: chat._id,
+      message: msg
+    })
+  };
   return (
     <>
       {chat && (
@@ -21,8 +46,22 @@ const ChatContainer = ({ chat }) => {
             </div>
             <Logout/>
           </div>
-          <div className="chat-messages"></div>
-          <div className="chat-input"></div>
+          {/* <Messaages/> */}
+          <div className="chat-messages">
+
+            {
+              messages.map((message,index)=>(
+                <div key={index} className={`message ${message.fromSelf ? "sended" : "recieved"}`}>
+                  <div className="content">
+                    <p>
+                    {message.message}
+                    </p>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+          <ChatInput handleSendMsg={handleSendMsg}/>
         </Container>
       )}
     </>
