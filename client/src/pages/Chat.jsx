@@ -4,6 +4,7 @@ import axios from "axios";
 import Contact from "../components/Contact";
 import styled from "styled-components";
 import Welcome from "../components/Welcome";
+import ChatContainer from "../components/ChatContainer";
 
 
 
@@ -11,6 +12,7 @@ const Chat = () => {
   const [contacts, setContacts] = useState([]);
   const [curresntUser, setCurrentUser] = useState(undefined);
   const [currentChat, setCurrentChat] = useState(undefined);
+  const [isLoaded, setIsLoaded] = useState(false); 
   const navigate = useNavigate();
   useEffect(() => {
     if (!localStorage.getItem("user")) {
@@ -18,6 +20,7 @@ const Chat = () => {
     }else{
         const user = JSON.parse(localStorage.getItem("user"));
         setCurrentUser(user);
+        setIsLoaded(true);
     }
   }, []);
 
@@ -47,7 +50,10 @@ const Chat = () => {
     <Container>
       <div className="container">
         <Contact contacts={contacts} curresntUser={curresntUser} changeChat={changeCurrentChat}/>
-        <Welcome user={curresntUser} chat={currentChat}/>
+        {
+          isLoaded && currentChat === undefined ? (<Welcome user={curresntUser} chat={currentChat}/>):(<ChatContainer chat={currentChat} user={curresntUser}/>)
+        }
+        
       </div>
     </Container>
   );
