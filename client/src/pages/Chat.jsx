@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Contact from "../components/Contact";
 import styled from "styled-components";
+import Welcome from "../components/Welcome";
 
 
 
@@ -46,6 +47,7 @@ const Chat = () => {
     <Container>
       <div className="container">
         <Contact contacts={contacts} curresntUser={curresntUser} changeChat={changeCurrentChat}/>
+        <Welcome user={curresntUser} chat={currentChat}/>
       </div>
     </Container>
   );
