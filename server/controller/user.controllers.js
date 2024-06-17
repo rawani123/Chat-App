@@ -50,4 +50,17 @@ const setAvatarImage = async (req, res) => {
     }
 }
 
-export {register,login,setAvatarImage};
+const getAllUsers = async (req, res) => {
+    try{
+        const {id} = req.params;
+        console.log(id)
+        const users = await User.find({_id:{$ne:id}}).select("-password");
+        return res.status(200).send({success: true, users});
+
+    }
+    catch(err){
+        return res.status(500).send({success: false, message: err.message});
+    }
+}
+
+export {register,login,setAvatarImage,getAllUsers};

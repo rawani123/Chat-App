@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import Chat from './pages/Chat'
-import SetAvatart from './pages/SetAvatart'
+import SetAvatart from './components/SetAvatart'
 
 const App = () => {
   return (
