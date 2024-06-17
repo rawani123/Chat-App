@@ -4,30 +4,63 @@ import Logout from "./Logout";
 import ChatInput from "./ChatInput";
 // import Messaages from "./Messaages";
 import axios from "axios";
-// import { get } from "mongoose";
+import { io } from "socket.io-client";
 
-const ChatContainer = ({ chat,user }) => {
-
+const ChatContainer = ({ chat, user, socket }) => {
+  // console.log(socket)
   const [messages, setMessages] = useState([]);
+  const [aravialMsgs, setAravialMsgs] = useState(null);
 
+  const scrollRef = React.useRef(); 
   useEffect(() => {
     const getMessages = async () => {
-      const {data}=await axios.post(`http://localhost:5000/api/v1/messages/get-all-messages`,{
-        from : user?._id,
-        to: chat?._id
-      });
+      const { data } = await axios.post(
+        `http://localhost:5000/api/v1/messages/get-all-messages`,
+        {
+          from: user?._id,
+          to: chat?._id,
+        }
+      );
       setMessages(data.messages);
     };
     getMessages();
   }, [chat]);
 
-  const handleSendMsg = async(msg) => {
-    await axios.post("http://localhost:5000/api/v1/messages/add-message",{
-      from:user._id,
+  const handleSendMsg = async (msg) => {
+    await axios.post("http://localhost:5000/api/v1/messages/add-message", {
+      from: user._id,
       to: chat._id,
-      message: msg
-    })
+      message: msg,
+    });
+    socket.current.emit("send-msg", {
+      to: chat._id,
+      from: user._id,
+      message: msg,
+    });
+
+    const msgs = [...messages];
+    msgs.push({ message: msg, fromSelf: true });
+    setMessages(msgs);
   };
+
+  useEffect(() => {
+    if (socket.current) {
+      socket.current.on("msg-recieve", (msg) => {
+        setAravialMsgs({
+          message: msg,
+          fromSelf: false,
+        });
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    aravialMsgs && setMessages((prev) => [...prev, aravialMsgs])
+  }, [aravialMsgs]);
+
+  useEffect(() => {
+      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   return (
     <>
       {chat && (
@@ -44,24 +77,25 @@ const ChatContainer = ({ chat,user }) => {
                 <h3>{chat.username}</h3>
               </div>
             </div>
-            <Logout/>
+            <Logout />
           </div>
           {/* <Messaages/> */}
           <div className="chat-messages">
-
-            {
-              messages.map((message,index)=>(
-                <div key={index} className={`message ${message.fromSelf ? "sended" : "recieved"}`}>
-                  <div className="content">
-                    <p>
-                    {message.message}
-                    </p>
-                  </div>
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                ref={scrollRef}
+                className={`message ${
+                  message.fromSelf ? "sended" : "recieved"
+                }`}
+              >
+                <div className="content">
+                  <p>{message.message}</p>
                 </div>
-              ))
-            }
+              </div>
+            ))}
           </div>
-          <ChatInput handleSendMsg={handleSendMsg}/>
+          <ChatInput handleSendMsg={handleSendMsg} />
         </Container>
       )}
     </>
