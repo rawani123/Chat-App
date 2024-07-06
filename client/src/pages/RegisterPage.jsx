@@ -60,7 +60,7 @@ const RegisterPage = () => {
     e.preventDefault();
     handleValidation();
     const { username, email, password } = values;
-    const {data} = await axios.post("http://localhost:5000/api/v1/auth/register", {username, email, password});
+    const {data} = await axios.post("https://chat-app-ru1f.onrender.com/api/v1/auth/register", {username, email, password});
     if(data.success){
       toast.success(data.message, toastOptions);
       //doen

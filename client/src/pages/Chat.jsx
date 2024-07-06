@@ -26,7 +26,7 @@ const Chat = () => {
 
   useEffect(() => {
     if (curresntUser) {
-      socket.current = io("http://localhost:5000");
+      socket.current = io("https://chat-app-ru1f.onrender.com");
       socket.current.emit("add-user", curresntUser._id);
     }
   }, [curresntUser]);
@@ -40,7 +40,7 @@ const Chat = () => {
       try {
         if (curresntUser.isAvatarImageSet) {
           const { data } = await axios.get(
-            `http://localhost:5000/api/v1/auth/getAllUsers/${curresntUser._id}`
+            `https://chat-app-ru1f.onrender.com/api/v1/auth/getAllUsers/${curresntUser._id}`
           );
           setContacts(data.users);
         } else {

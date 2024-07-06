@@ -43,7 +43,7 @@ export default function Login() {
     if (validateForm()) {
       const { username, password } = values;
       const { data } = await axios.post(
-        "http://localhost:5000/api/v1/auth/login",
+        "https://chat-app-ru1f.onrender.com/api/v1/auth/login",
         {
           username,
           password,

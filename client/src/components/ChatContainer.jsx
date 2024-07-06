@@ -15,7 +15,7 @@ const ChatContainer = ({ chat, user, socket }) => {
   useEffect(() => {
     const getMessages = async () => {
       const { data } = await axios.post(
-        `http://localhost:5000/api/v1/messages/get-all-messages`,
+        `https://chat-app-ru1f.onrender.com/api/v1/messages/get-all-messages`,
         {
           from: user?._id,
           to: chat?._id,
@@ -27,7 +27,7 @@ const ChatContainer = ({ chat, user, socket }) => {
   }, [chat]);
 
   const handleSendMsg = async (msg) => {
-    await axios.post("http://localhost:5000/api/v1/messages/add-message", {
+    await axios.post("https://chat-app-ru1f.onrender.com/api/v1/messages/add-message", {
       from: user._id,
       to: chat._id,
       message: msg,
