@@ -4,7 +4,7 @@ import Logout from "./Logout";
 import ChatInput from "./ChatInput";
 // import Messaages from "./Messaages";
 import axios from "axios";
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
 
 const ChatContainer = ({ chat, user, socket }) => {
   // console.log(socket)
